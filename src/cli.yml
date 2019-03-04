@@ -1,0 +1,19 @@
+name: teams_timesheet
+version: "1.0"
+author: Jason Poindexter <poindexter.json@gmail.com>
+about: List and organizes MS Teams messages
+args:
+  - authorization:
+      short: a
+      long: auth
+      value_name: AUTH
+      takes_value: true
+      required: true
+      help: Teams authentication header value
+  - name:
+      short: n
+      long: name
+      value_name: NAME
+      required: true
+      takes_value: true
+      help: Filter messages by display name

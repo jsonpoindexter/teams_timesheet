@@ -1,0 +1,12 @@
+[package]
+name = "teams_timesheet"
+version = "0.1.0"
+authors = ["Jason Poindexter <poindexter.json@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+reqwest = "0.9.10"
+serde = { version = "1.0", features = ["derive"] }
+colored = "1.7.0"
+chrono = { version = "0.4", features = ["serde"] }
+clap = {version = "~2.27.0", features = ["yaml"]}
