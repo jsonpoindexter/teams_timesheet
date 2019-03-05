@@ -52,36 +52,35 @@ fn get_messages(auth: &str, disaply_name: &str) -> Result<(), Box<Error>> {
     if res.status().is_success() {
         let response: Response = res.json()?;
         let mut messages = response.messages;
-        // TODO: move to own function
-        messages.sort_by(|a, b| a.composetime.cmp(&b.composetime));
-        let mut previous_date: DateTime<Local> = messages[0].composetime;
-        let mut color = colors[max(min(colors.len(), messages[0].composetime.day() as usize), 0)];
-        for mut message in messages {
-            match message.messagetype.as_ref() {
-                "Text" => {
-                    if message.imdisplayname.eq(disaply_name) {
-                        if !previous_date.day().eq(&message.composetime.day()) {
-                            color = colors[max(min(colors.len(), message.composetime.day() as usize), 0)];
-                            println!("\n\x1B[{}m{}\x1B[0m ", color, message.composetime.format("%a %b %e %T %Y").to_string().bold().underline());
-                            previous_date = message.composetime;
-                        }
-                        if message.content.len() > 103 { // TODO: check for last char being whitespace
-                            message.content.truncate(100);
-                            message.content.push_str("...");
-                        }
-                        println!("\x1B[{}m{}\x1B[0m {}", color, message.composetime.format("%Y-%m-%d %H:%M:%S").to_string(), message.content);
-                    }
-                }
-                _ => {}
-            }
-        }
+        display_messages(messages);
     } else {
         // TODO: handle 401 unauthorized
         println!("{:#?}", res.status());
     }
-
-
     Ok(())
 }
 
-
+fn display_messages(message: Vec<Message>){
+    messages.sort_by(|a, b| a.composetime.cmp(&b.composetime));
+    let mut previous_date: DateTime<Local> = messages[0].composetime;
+    let mut color = colors[max(min(colors.len(), messages[0].composetime.day() as usize), 0)];
+    for mut message in messages {
+        match message.messagetype.as_ref() {
+            "Text" => {
+                if message.imdisplayname.eq(disaply_name) {
+                    if !previous_date.day().eq(&message.composetime.day()) {
+                        color = colors[max(min(colors.len(), message.composetime.day() as usize), 0)];
+                        println!("\n\x1B[{}m{}\x1B[0m ", color, message.composetime.format("%a %b %e %T %Y").to_string().bold().underline());
+                        previous_date = message.composetime;
+                    }
+                    if message.content.len() > 103 { // TODO: check for last char being whitespace
+                        message.content.truncate(100);
+                        message.content.push_str("...");
+                    }
+                    println!("\x1B[{}m{}\x1B[0m {}", color, message.composetime.format("%Y-%m-%d %H:%M:%S").to_string(), message.content);
+                }
+            }
+            _ => {}
+        }
+    }
+}
